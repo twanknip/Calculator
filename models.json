@@ -1,0 +1,15 @@
+{
+    "Philips": ["EP 2300 series", "EP 3300 series", "EP 4300 series", "EP 4400 series", "EP 5300 series", "EP 5400 series", "EP 5500 series"],
+    "Jura": ["A series", "D series", "Ena series", "Ena 8", "E series", "F series", "GIGA series", "GIGA X7C", "GIGA X series", "GIGA 10 series", "X series", "XF series", "S series", "XS series", "J 5 tm 7 series", "J8", "J9 & J10 series", "WE series", "Z5", "Z6", "Z7"],
+    "DeLonghi": ["Dinamica series", "Primadonna series", "Primadonna Elite series", "Primadonna Exclusive series", "Eletta series", "Maestosa series", "Cappuccino series"],
+    "Siemens": ["EQ6 S100", "EQ6 PLUS S100", "EQ6 S300", "EQ6 PLUS S300", "EQ6 S400", "EQ6 PLUS S400", "EQ6 S500", "EQ6 PLUS S500", "EQ6 S700", "EQ6 PLUS S700", "EQ6 PLUS S800", "EQ6 PLUS EXTRA KLASSE", "EQ9 series", "Inbouw machines"],
+    "Sage": ["Barista express series", "Barista Pro series", "Barista Touch series", "Oracle series"],
+    "Solis": ["Grind & Infuse series", "Espresso bar series"],
+    "Gaggia": ["Titanium", "Platinum", "Brera"],
+    "Nivona": ["CafeRomatica series"],
+    "Melitta": ["Barista series", "Caffeo Cl series", "Avanza series", "Caffeo Passione"],
+    "Saeco": ["Xelsis series", "Pico Barista series", "Lirika"],
+    "Atag": ["Inbouw machines"],
+    "Miele": ["Inbouw machines"],
+    "Bauknecht": ["Inbouw machines"]
+}
