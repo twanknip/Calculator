@@ -1,90 +1,105 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prijsresultaat</title>
+    <title>Resultaat van de Koffiemachine Evaluatie</title>
     <style>
-        #loading {
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .loading {
             display: none;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .loading-spinner {
-            border: 16px solid #f3f3f3; /* Light grey */
-            border-top: 16px solid #3cbf5f; /* Blue */
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .price-output {
-            text-align: center;
+            font-style: italic;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div id="loading">
-        <div class="loading-spinner"></div>
-        <p>Bezig met laden...</p>
+    <div class="container">
+        <h1>Resultaat van de Koffiemachine Evaluatie</h1>
+        <div class="result" id="resultaat">Het berekenen van uw evaluatie...</div>
+        <div class="loading" id="loading">Berekening bezig, even geduld alstublieft...</div>
     </div>
-    <div class="price-output" id="priceOutput"></div>
 
     <script>
+        // Basisprijzen voor verschillende merken en modellen
         const basePrices = {
-            "Philips": { "EP 2300 series": 70, "EP 3300 series": 80, "EP 4300 series": 125, "EP 4400 series": 125, "EP 5300 series": 80, "EP 5400 series": 150, "EP 5500 series": 125 },
-            "Jura": { "A series": 80, "D series": 150, "Ena series": 100, "Ena 8": 125, "E series": 150, "F series": 130, "GIGA series": 425, "GIGA X7C": 425, "GIGA X series": 700, "GIGA 10 series": 700, "X series": 700, "XF series": 150, "S series": 200, "XS series": 200, "J 5 tm 7 series": 125, "J8": 450, "J9 & J10 series": 175, "WE series": 200, "Z5": 200, "Z6": 350, "Z7": 350 },
-            // Voeg hier overige merken en modellen toe...
+            Philips: {
+                'Model A': 70,
+                'Model B': 100,
+                'Model C': 150
+            },
+            Jura: {
+                'Model X': 80,
+                'Model Y': 300,
+                'Model Z': 700
+            }
         };
 
-        const getQueryParams = () => {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                brand: params.get('brand'),
-                model: params.get('model'),
-                condition: parseFloat(params.get('condition')) || 100,
-                electronics: parseFloat(params.get('electronics')) || 0,
-                accessories: parseFloat(params.get('accessories')) || 0,
-                cleaning: parseFloat(params.get('cleaning')) || 0
-            };
-        };
-
+        // Functie om de prijs te berekenen
         const calculatePrice = ({ brand, model, condition, electronics, accessories, cleaning }) => {
             return new Promise(resolve => {
                 setTimeout(() => {
                     const basePrice = basePrices[brand]?.[model];
-                    if (!basePrice) return resolve('Onbekend model of merk');
+                    if (!basePrice) {
+                        return resolve('€Onbekend model of merk');
+                    }
 
+                    // Toepassing van Conditiefactor
                     let finalPrice = basePrice * (condition / 100);
-                    finalPrice *= (1 + electronics / 100);
-                    finalPrice *= (1 - accessories / 100);
-                    finalPrice *= (1 + cleaning / 100);
-                    
-                    if (cleaning === 0) finalPrice *= 0.95; // Niet schoongemaakt
 
-                    resolve(finalPrice.toFixed(2));
-                }, 2000); // Simuleer 2 seconden vertraging
+                    // Toepassing van Elektronica/Display Factoren
+                    if (electronics !== 0) {
+                        finalPrice *= (1 + electronics / 100);
+                    }
+
+                    // Toepassing van Accessoires Factoren
+                    if (accessories !== 0) {
+                        finalPrice *= (1 + accessories / 100);
+                    }
+
+                    // Toepassing van Schoonmaakfactoren
+                    if (cleaning !== 0) {
+                        finalPrice *= (1 + cleaning / 100);
+                    } else {
+                        finalPrice *= 0.95; // Niet schoongemaakt, 5% vermindering
+                    }
+
+                    resolve('€' + finalPrice.toFixed(2));
+                }, 2000);  // Simuleer 2-seconden vertraging
             });
         };
 
-        const showPrice = async () => {
-            const params = getQueryParams();
-            document.getElementById('loading').style.display = 'block';
-            const price = await calculatePrice(params);
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('priceOutput').innerHTML = `<h1>De berekende prijs is: €${price}</h1>`;
+        // Simuleer de invoer van de vragenlijst (dummy gegevens voor demonstratie)
+        const userInput = {
+            brand: 'Philips',          // Merk
+            model: 'Model B',          // Model
+            condition: 70,             // Voorbeeld: Intensief gebruikt (-30%)
+            electronics: -20,          // Voorbeeld: Problemen met elektronica (-20%)
+            accessories: -15,          // Voorbeeld: Niet alle accessoires (-15%)
+            cleaning: 5                // Voorbeeld: Professioneel gereinigd (+5%)
         };
 
-        window.onload = showPrice;
+        // Start de berekening en toon het resultaat
+        document.getElementById('loading').style.display = 'block';
+        calculatePrice(userInput).then(result => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultaat').innerText = `Geschatte waarde: ${result}`;
+        });
     </script>
 </body>
 </html>

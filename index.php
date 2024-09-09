@@ -8,7 +8,7 @@
     <style>
         .step { display: none; }
         .step.active { display: block; }
-        #loading { display: none; }
+        .dynamic-question { display: none; }
     </style>
     <script>
         const models = {
@@ -25,43 +25,6 @@
             "Atag": ["Inbouw machines"],
             "Miele": ["Inbouw machines"],
             "Bauknecht": ["Inbouw machines"]
-        };
-
-        const basePrices = {
-            "Philips": {
-                "EP 2300 series": 70,
-                "EP 3300 series": 80,
-                "EP 4300 series": 125,
-                "EP 4400 series": 125,
-                "EP 5300 series": 80,
-                "EP 5400 series": 150,
-                "EP 5500 series": 125
-            },
-            "Jura": {
-                "A series": 80,
-                "D series": 150,
-                "Ena series": 100,
-                "Ena 8": 125,
-                "E series": 150,
-                "F series": 130,
-                "GIGA series": 425,
-                "GIGA X7C": 425,
-                "GIGA X series": 700,
-                "GIGA 10 series": 700,
-                "X series": 700,
-                "XF series": 150,
-                "S series": 200,
-                "XS series": 200,
-                "J 5 tm 7 series": 125,
-                "J8": 450,
-                "J9 & J10 series": 175,
-                "S series": 175,
-                "WE series": 200,
-                "Z5": 200,
-                "Z6": 350,
-                "Z7": 350
-            },
-            // Voeg overige merken en modellen hier toe
         };
 
         function updateModels() {
@@ -88,38 +51,55 @@
             }
         }
 
-        function submitForm() {
-            const brand = document.getElementById('brand').value;
-            const model = document.getElementById('model').value;
-            const condition = document.querySelector('input[name="condition"]:checked')?.value || 100;
-            const electronics = document.querySelector('input[name="electronics"]:checked')?.value || 0;
-            const accessories = document.querySelector('input[name="accessories"]:checked')?.value || 0;
-            const cleaning = document.querySelector('input[name="cleaning"]:checked')?.value || 0;
-
-            if (brand && model) {
-                const queryParams = `?brand=${encodeURIComponent(brand)}&model=${encodeURIComponent(model)}&condition=${encodeURIComponent(condition)}&electronics=${encodeURIComponent(electronics)}&accessories=${encodeURIComponent(accessories)}&cleaning=${encodeURIComponent(cleaning)}`;
-                window.location.href = `resultaat.html${queryParams}`;
-            } else {
-                alert('Selecteer een merk en model om verder te gaan.');
-            }
-        }
-
         function showStep(stepNumber) {
             document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
             document.getElementById(`step${stepNumber}`).classList.add('active');
         }
 
+        function submitForm() {
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const machineStatus = document.querySelector('input[name="machine-status"]:checked')?.value || "";
+            const electronics = document.querySelector('input[name="electronics"]:checked')?.value || "";
+            const accessories = document.querySelector('input[name="accessories"]:checked')?.value || "";
+            const cleaning = document.querySelector('input[name="cleaning"]:checked')?.value || "";
+            const packaging = document.querySelector('input[name="packaging"]:checked')?.value || "";
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            if (brand && model && machineStatus && name && email && phone) {
+                const queryParams = `?brand=${encodeURIComponent(brand)}&model=${encodeURIComponent(model)}&machineStatus=${encodeURIComponent(machineStatus)}&electronics=${encodeURIComponent(electronics)}&accessories=${encodeURIComponent(accessories)}&cleaning=${encodeURIComponent(cleaning)}&packaging=${encodeURIComponent(packaging)}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}`;
+                window.location.href = `resultaat.html${queryParams}`;
+            } else {
+                alert('Vul alle velden in om verder te gaan.');
+            }
+        }
+
+        function toggleDynamicQuestion() {
+            const machineStatus = document.querySelector('input[name="machine-status"]:checked')?.value;
+            const electronicsQuestion = document.getElementById('electronicsQuestion');
+            if (machineStatus === "repair_needed" || machineStatus === "not_properly_working") {
+                electronicsQuestion.style.display = 'block';
+            } else {
+                electronicsQuestion.style.display = 'none';
+            }
+        }
+
         window.onload = function () {
             document.getElementById('brand').addEventListener('change', updateModels);
             document.getElementById('nextStep1').addEventListener('click', () => showStep(2));
+            document.getElementById('nextStep2').addEventListener('click', () => showStep(3));
             document.getElementById('submitForm').addEventListener('click', submitForm);
+            
+            document.querySelectorAll('input[name="machine-status"]').forEach(input => {
+                input.addEventListener('change', toggleDynamicQuestion);
+            });
         };
     </script>
 </head>
 <body>
     <div>
-        <h1>Verkoop uw gebruikte koffiezetapparaat</h1>
-
         <!-- Step 1: Select Brand and Model -->
         <div id="step1" class="step active">
             <form id="formStep1">
@@ -158,78 +138,65 @@
         <div id="step2" class="step">
             <form id="formStep2">
                 <div>
-                    <span>Conditie:</span>
-                    <div>
-                        <label>
-                            <input type="radio" name="condition" value="100" checked>
-                            Top-staat
-                        </label>
-                        <label>
-                            <input type="radio" name="condition" value="70">
-                            Intensief gebruikt 
-                        </label>
-                        <label>
-                            <input type="radio" name="condition" value="60">
-                            Reparatie nodig - mechanisch
-                        </label>
-                    </div>
+                    <label>Werkt de machine?</label>
+                    <input type="radio" name="machine-status" value="working_well" checked> De machine werkt goed en is in top-staat.
+                    <input type="radio" name="machine-status" value="heavily_used"> De machine werkt goed, maar intensief gebruikt.
+                    <input type="radio" name="machine-status" value="repair_needed"> De machine werkt, maar heeft reparatie nodig.
+                    <input type="radio" name="machine-status" value="not_properly_working"> De machine werkt niet naar behoren.
+                </div>
+
+                <div id="electronicsQuestion" class="dynamic-question">
+                    <label>Zijn er specifieke problemen met de elektronica of het display?</label>
+                    <input type="radio" name="electronics" value="electronics_issue"> Ja, er zijn problemen met de elektronica.
+                    <input type="radio" name="electronics" value="display_issue"> Ja, er zijn problemen met het display.
+                    <input type="radio" name="electronics" value="mechanical_issue" checked> Nee, de problemen zijn alleen van mechanische aard.
                 </div>
 
                 <div>
-                    <span>Elektronica/Display factor:</span>
-                    <div>
-                        <label>
-                            <input type="radio" name="electronics" value="0" checked>
-                            Geen problemen
-                        </label>
-                        <label>
-                            <input type="radio" name="electronics" value="-20">
-                            Problemen elektronica 
-                        </label>
-                        <label>
-                            <input type="radio" name="electronics" value="-20">
-                            Problemen display 
-                        </label>
-                    </div>
+                    <label>Hoe compleet is de machine?</label>
+                    <input type="radio" name="accessories" value="all_present" checked> Alle originele accessoires zijn aanwezig.
+                    <input type="radio" name="accessories" value="some_missing"> Niet alle originele accessoires zijn aanwezig.
                 </div>
 
                 <div>
-                    <span>Originele accessoires aanwezig:</span>
-                    <div>
-                        <label>
-                            <input type="radio" name="accessories" value="0" checked>
-                            Ja
-                        </label>
-                        <label>
-                            <input type="radio" name="accessories" value="-15">
-                            Nee 
-                        </label>
-                    </div>
+                    <label>Schoonmaakstatus van de machine</label>
+                    <input type="radio" name="cleaning" value="professionally_cleaned" checked> De machine is professioneel gereinigd en ontkalkt.
+                    <input type="radio" name="cleaning" value="thoroughly_cleaned"> De machine is grondig schoongemaakt.
+                    <input type="radio" name="cleaning" value="superficially_cleaned"> De machine heeft een oppervlakkige schoonmaak gehad.
+                    <input type="radio" name="cleaning" value="needs_maintenance"> De machine is niet schoongemaakt en heeft onderhoud nodig.
                 </div>
 
                 <div>
-                    <span>Schoonmaakfactor:</span>
-                    <div>
-                        <label>
-                            <input type="radio" name="cleaning" value="5" checked>
-                            Professioneel gereinigd en ontkalkt 
-                        </label>
-                        <label>
-                            <input type="radio" name="cleaning" value="2">
-                            Grondig schoongemaakt 
-                        </label>
-                        <label>
-                            <input type="radio" name="cleaning" value="0">
-                            Oppervlakkig schoongemaakt 
-                        </label>
-                        <label>
-                            <input type="radio" name="cleaning" value="-5">
-                            Niet schoongemaakt en onderhoud nodig 
-                        </label>
-                    </div>
+                    <label>Verzendopties</label>
+                    <input type="radio" name="packaging" value="original_box" checked> Ik kan mijn machine verzenden in de originele doos.
+                    <input type="radio" name="packaging" value="self_packaging"> Ik kan mijn machine zelf verpakken.
+                    <input type="radio" name="packaging" value="request_packaging"> Ik ontvang graag verpakkingsmateriaal.
                 </div>
 
-                <button type="button" id="submitForm">Prijs berekenen</button>
+                <button type="button" id="nextStep2">Volgende stap</button>
+            </form>
+        </div>
+
+        <!-- Step 3: Personal Information -->
+        <div id="step3" class="step">
+                <div>
+                    <label for="name">Naam:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div>
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div>
+                    <label for="phone">Telefoonnummer:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <a href="resultaat.html" id="submitForm" class="button-link">Bereken prijs</a>
+                </form>
+            
             </form>
         </div>
     </div>
