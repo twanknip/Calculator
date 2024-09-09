@@ -1,0 +1,150 @@
+/* Algemene stijlen voor knoppen */
+button {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+/* Stijlen voor formulier en stappen */
+form {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.step {
+    display: none; /* Standaard niet zichtbaar */
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.step.active {
+    display: grid; /* Alleen zichtbaar als active */
+}
+
+form div {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+form div > div {
+    margin-left: 0; /* Verwijder de linker marge die soms toegevoegd kan zijn */
+}
+
+/* Stijlen voor radiobuttons */
+form input[type="radio"] {
+    appearance: none;
+    background-color: #fff;
+    display: inline-block;
+    margin-right: 10px;
+    color: #bfc3c8;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #bfc3c8;
+    border-radius: 50%;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+}
+
+form input[type="radio"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    border-radius: 50%;
+    background-color: #555555;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 120ms ease-in-out;
+}
+
+form input[type="radio"]:checked::before {
+    transform: translate(-50%, -50%) scale(1);
+    background-color: #555555;
+}
+
+form input[type="radio"]:checked {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(38, 143, 255, 0.5);
+}
+
+form input[type="radio"]:hover {
+    border-color: #555555;
+}
+
+/* Responsieve stijlen */
+@media (min-width: 600px) {
+    .step {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    form div {
+        display: block;
+    }
+}
+
+/* Stijlen voor headers en select-lijsten */
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+label, select {
+    font-size: 1.1rem;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+/* Stijlen voor dynamische vragen */
+.dynamic-question {
+    display: none;
+}
+
+.dynamic-question.active {
+    display: block;
+}
+
+/* Formuliervelden */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    font-size: 1rem;
+    margin-top: 5px;
+}
