@@ -18,12 +18,7 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
--- Verwijder de tabellen als ze al bestaan
-DROP TABLE IF EXISTS `machine_prices`;
-DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `models`;
-DROP TABLE IF EXISTS `machine_data`;
-DROP TABLE IF EXISTS `brands`;
+
 
 -- --------------------------------------------------------
 
