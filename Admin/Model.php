@@ -2,7 +2,7 @@
 
 require_once 'Database.php';
 
-class CoffeeModel
+class Model
 {
     private $conn;
     private $table = 'models';

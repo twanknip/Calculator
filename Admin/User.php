@@ -1,37 +1,31 @@
 <?php
-
-require_once 'Database.php';
-
-class User
-{
+class User {
     private $conn;
-    private $table = 'users';
-
-    public $idUsers;
     public $email;
     public $password;
-    public $role;
 
-    public function __construct($db)
-    {
+    public function __construct($db) {
         $this->conn = $db;
     }
 
-    // Find user by email
-    public function findUserByEmail($email)
-    {
-        $query = 'SELECT * FROM ' . $this->table . ' WHERE email = ? LIMIT 0,1';
+    public function login() {
+        // Query to select user by email
+        $query = "SELECT idUsers, password FROM users WHERE email = :email LIMIT 1";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $email);
+        $stmt->bindParam(':email', $this->email);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Verify password using password_verify
-    public function verifyPassword($inputPassword, $hashedPassword) {
-        return password_verify($inputPassword, $hashedPassword);
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Verify password
+            if (password_verify($this->password, $row['password'])) {
+                // Set session variables
+                $_SESSION['loggedin'] = true;
+                $_SESSION['user_id'] = $row['idUsers'];
+                return true;
+            }
+        }
+        return false;
     }
 }
-
 ?>

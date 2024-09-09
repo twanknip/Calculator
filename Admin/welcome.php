@@ -1,8 +1,11 @@
 <?php
+
 session_start();
-if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
-    header('Location: login.php');
-    exit;
+
+// Check if the user is logged in
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php"); // Redirect to login page
+    exit();
 }
 
 require_once 'Database.php';
@@ -10,6 +13,9 @@ require_once 'Brand.php';
 require_once 'Model.php';
 
 $db = (new Database())->connect();
+if (!$db) {
+    die("Database connection failed.");
+}
 $brandObj = new Brand($db);
 $modelObj = new Model($db);
 
@@ -54,6 +60,7 @@ $models = $modelObj->readAll();
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <h2>Beheer Merken</h2>
@@ -70,11 +77,20 @@ $models = $modelObj->readAll();
     <tr>
         <th>ID</th>
         <th>Naam</th>
+        <th>Acties</th>
     </tr>
     <?php while ($row = $brands->fetch(PDO::FETCH_ASSOC)): ?>
         <tr>
             <td><?= htmlspecialchars($row['id']); ?></td>
             <td><?= htmlspecialchars($row['name']); ?></td>
+            <td>
+                <a href="manage.php?type=brand&id=<?= htmlspecialchars($row['id']); ?>" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="manage.php?type=brand&id=<?= htmlspecialchars($row['id']); ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this brand?');">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
         </tr>
     <?php endwhile; ?>
 </table>
@@ -95,15 +111,30 @@ $models = $modelObj->readAll();
         <th>ID</th>
         <th>Merk ID</th>
         <th>Naam</th>
+        <th>Acties</th>
     </tr>
     <?php while ($row = $models->fetch(PDO::FETCH_ASSOC)): ?>
         <tr>
             <td><?= htmlspecialchars($row['id']); ?></td>
             <td><?= htmlspecialchars($row['brand_id']); ?></td>
             <td><?= htmlspecialchars($row['name']); ?></td>
+            <td>
+                <a href="manage.php?type=model&id=<?= htmlspecialchars($row['id']); ?>" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="manage.php?type=model&id=<?= htmlspecialchars($row['id']); ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this model?');">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
         </tr>
     <?php endwhile; ?>
 </table>
 
+<!-- Logout Button -->
+<form action="logout.php" method="post">
+    <button type="submit">Logout</button>
+</form>
+
 </body>
 </html>
+
