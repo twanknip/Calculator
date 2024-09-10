@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Gegenereerd op: 09 sep 2024 om 13:45
--- Serverversie: 10.4.32-MariaDB
--- PHP-versie: 8.2.12
+-- Generated on: 09 sep 2024 at 13:45
+-- Server version: 10.4.32-MariaDB
+-- PHP version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,18 +18,14 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
-
-
--- --------------------------------------------------------
-
--- Tabelstructuur voor tabel `brands`
+-- Table structure for table `brands`
 CREATE TABLE `brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Gegevens voor tabel `brands`
+-- Data for table `brands`
 INSERT INTO `brands` (`id`, `name`) VALUES
 (1, 'Philips'),
 (2, 'Jura'),
@@ -47,17 +43,17 @@ INSERT INTO `brands` (`id`, `name`) VALUES
 
 -- --------------------------------------------------------
 
--- Tabelstructuur voor tabel `models`
+-- Table structure for table `models`
 CREATE TABLE `models` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `brand_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_brand_id` (`brand_id`),
-  CONSTRAINT `fk_brand_id` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_models_brands` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Gegevens voor tabel `models`
+-- Data for table `models`
 INSERT INTO `models` (`id`, `brand_id`, `name`) VALUES
 (1, 1, 'EP 2300 series'),
 (2, 1, 'EP 3300 series'),
@@ -82,7 +78,7 @@ INSERT INTO `models` (`id`, `brand_id`, `name`) VALUES
 
 -- --------------------------------------------------------
 
--- Tabelstructuur voor tabel `machine_data`
+-- Table structure for table `machine_data`
 CREATE TABLE `machine_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `brand` varchar(255) NOT NULL,
@@ -100,16 +96,16 @@ CREATE TABLE `machine_data` (
 
 -- --------------------------------------------------------
 
--- Tabelstructuur voor tabel `users`
+-- Table structure for table `users`
 CREATE TABLE `users` (
   `idUsers` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
   `role` enum('admin','user') NOT NULL,
   PRIMARY KEY (`idUsers`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Gegevens voor tabel `users`
+-- Data for table `users`
 INSERT INTO `users` (`idUsers`, `email`, `password`, `role`) VALUES
 (1, 'admin@gmail.com', 'admin', 'admin'),
 (2, 'admin2@gmail.com', 'admin', 'admin'),
@@ -117,20 +113,20 @@ INSERT INTO `users` (`idUsers`, `email`, `password`, `role`) VALUES
 
 -- --------------------------------------------------------
 
--- Tabelstructuur voor tabel `machine_prices`
+-- Table structure for table `machine_prices`
 CREATE TABLE `machine_prices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `brand_id` int(11) NOT NULL,
   `model_id` int(11) NOT NULL,
   `base_price` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_brand_id` (`brand_id`),
-  KEY `fk_model_id` (`model_id`),
-  CONSTRAINT `fk_brand_id` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_model_id` FOREIGN KEY (`model_id`) REFERENCES `models` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_machine_prices_brand_id` (`brand_id`),
+  KEY `fk_machine_prices_model_id` (`model_id`),
+  CONSTRAINT `fk_machine_prices_brand_id` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_machine_prices_model_id` FOREIGN KEY (`model_id`) REFERENCES `models` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Gegevens voor tabel `machine_prices`
+-- Data for table `machine_prices`
 INSERT INTO `machine_prices` (`brand_id`, `model_id`, `base_price`) VALUES
 (1, 1, 70.00),
 (1, 2, 80.00),
